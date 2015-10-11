@@ -1,43 +1,40 @@
-/**
- * Created by abh on 10/10/15.
- */
-/*Sample code to read in test cases:*/
+'strict'
 var fs  = require("fs");
-fs.readFileSync(process.argv[2]).toString().split('\n').forEach(function (line) {
+fs.readFileSync(process.argv[2],'utf8').split('\n').forEach(function (line) {
     if (line != "") {
-        var seed,
+        var specification,
             X,
             Y,
-            max,
-            buf,
-            numbers;
+            numberCount,
+            sizedArray,
 
-        seed = line.split(' ');
+            makeNumberList = function (value, index) {
+                return index + 1;
+            },
 
-        X = parseInt(seed[0]);
-        Y = parseInt(seed[1]);
-        max = parseInt(seed[2]);
-        buf = Array.apply(null, Array(max)).map(function (curr, ind) {
-            return ind+1;
-        });
+            fizzBuzzReplace = function (value) {
+                if (!(value % X) && !(value % Y)) {
+                    return 'FB';
+                }
 
-        numbers = buf.map(function (curr) {
+                if (!(value % X)) {
+                    return 'F';
+                }
 
-            if (!(curr % X) && !(curr % Y)) {
-                return 'FB';
-            }
+                if (!(value % Y)) {
+                    return 'B';
+                }
 
-            if (!(curr % X)) {
-                return 'F';
-            }
+                return value;
+            };
 
-            if (!(curr % Y)) {
-                return 'B';
-            }
+        specification = line.split(' ');
 
-            return curr;
-        });
+        X = parseInt(specification[0]);
+        Y = parseInt(specification[1]);
+        numberCount = parseInt(specification[2]);
+        sizedArray  = Array.apply(null, Array(numberCount));
 
-        console.log(numbers.join(' '));
+        console.log(sizedArray.map(makeNumberList).map(fizzBuzzReplace).join(' '));
     }
 });
