@@ -19,18 +19,26 @@ fs.readFileSync(process.argv[2],'utf8').split('\n').forEach(function (line, line
     }
  });
 
-//Create indexing array: Map over array, create array of line sizes and index
-var ind = lineArray.map(function (line, index) {
+var indexLine = function (line, index) {
     return {'len': line.length,
         'pos': index};
-});
-//Sort indexing array
-sorted = ind.sort(function (a, b) {
+};
+
+var byLength = function (a, b) {
     return b.len - a.len;
-});
-//Output the X longest lines
-sorted.forEach(function (line, index) {
+};
+
+var printLongest = function (line, index) {
     if (index < noOfLines) {
         console.log(lineArray[sorted[index].pos]);
     }
-});
+};
+
+//Create indexing array: Map over array, create array of line sizes and index
+
+
+//Sort indexing array
+sorted = lineArray.map(indexLine).sort(byLength);
+
+//Output the X longest lines
+sorted.forEach(printLongest);
