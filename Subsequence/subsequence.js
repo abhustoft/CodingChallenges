@@ -1,4 +1,4 @@
-
+'strict'
  var fs  = require("fs");
  fs.readFileSync(process.argv[2]).toString().split('\n').forEach(function (line) {
      if (line != "") {
@@ -6,59 +6,66 @@
          var lines = line.split(';'),
              first = lines[0],
              second = lines[1],
-             LoCoSe = {'regex': '', 'maxLength': 0},
-             re;
+             finalRe = '',
+             prevRe,
+             re = '',
+             matchRe = /\.\*/g,
+             longestMatch = 0,
 
-         console.log(lines);
+             match = function (re) {
+                 //console.log(re);
+                 return second.search(re) != -1;
+             },
 
-         re = new RegExp(first[0]);
-
-         var match = function (re) {
-             return second.search(re) != -1;
-         };
-
-         var createRegex = function (firstChar, noOfChars) {
-             var re = first[firstChar];
-             for (var i = firstChar+1; i < firstChar+noOfChars; i++) {
-                 re = re + '.*' + first[i];
-             }
-             return re;
-         };
-
-         console.log(createRegex(2,4));
-
-         var matchTwo = function (x, y) {
-
-             if (x === y) {
-                 console.log(re);
-                 return first[x];
-             }
-
-             re = first[x] + '.*' + first[y];
-             console.log(re);
-             return second.search(re) != -1;
-         };
-
-         var straightSequence = function (charPos) {
-
-             // Look for pos and all chars after (pos+i)
-             for (var pos = charPos; pos < first.length; pos++) {
-
-                 //Look for match of following chars
-                 for (var nextChar = pos; nextChar < second.length; nextChar++) {
-                    if (matchTwo(pos, nextChar)) {
-                        console.log('Found match of ' + first[pos] + ' and ' + first[nextChar]);
-                        // Look for match of pos and nextChar AND nextChar+1!
-                    } else {
-                        console.log('No match of ' + first[pos] + ' and ' + first[nextChar]);
-                    }
+             registerLongest = function () {
+                 //console.log('Found match of ' +  re.replace(matchRe,''));
+                 if (re.length > finalRe.length) {
+                     finalRe = re;
+                     longestMatch = re.replace(matchRe, '').length;
+                     //console.log('Longest match:', longestMatch)
                  }
-             }
-         };
+             },
 
-         straightSequence(0);
+             getReForNext = function (nextChar) {
+                 prevRe = re;
+                 return re + '.*' + nextChar;
+             },
 
+             backUpOneAndCheck = function (nextChar, index) {
+                 // No match - remove last char in re
+                 if (index === (first.length-1)) {
+                     console.log('End of line for matching ' + first[index] + ' Start on new sequence with ' + first[index+1]);
+                     return;
+                 }
+                 //console.log(re + ' did not match, try ' + prevRe + ' and ' + first[i+1]);
+                 return prevRe + '.*' + nextChar;
 
-         console.log('LCS: ', LoCoSe);
+             },
+
+             checkSequence = function (char, i) {
+                 var nextChar = first[i+1];
+
+                 if (match(re)) {
+                     registerLongest();
+                     re = getReForNext(nextChar);
+                     //console.log('Try ' + re);
+                 } else {
+                     re = backUpOneAndCheck(nextChar, i);
+                 }
+             },
+
+             charInLine = function (char, index) {
+                 var remainingFirst = first.slice(index).split('');
+                 re = first[index];
+
+                 remainingFirst.forEach(checkSequence);
+             };
+
+         //console.log(lines);
+
+         var firstArr = first.split('');
+         firstArr.forEach(charInLine);
+
+         console.log(finalRe.replace(matchRe,''));
      }
  });
