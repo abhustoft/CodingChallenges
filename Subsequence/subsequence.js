@@ -19,7 +19,6 @@
              registerLongest = function () {
                  if (re.length > finalRe.length) {
                      finalRe = re;
-                     //console.log('Longest match:', finalRe)
                  }
              },
 
@@ -31,10 +30,8 @@
              backUpOneAndCheck = function (nextChar, index) {
                  // No match - remove last char in re
                  if (index === (first.length-1)) {
-                     //console.log('End of line for matching ' + first[index] + ' Start on new sequence');
                      return;
                  }
-                 //console.log(re + ' did not match, try ' + prevRe + ' and ' + first[i+1]);
                  return prevRe + '.*' + nextChar;
 
              },
@@ -46,14 +43,10 @@
                      //console.log('Found match of ' +  re);
                      registerLongest();
                      re = getReForNext(nextChar);
-                     //console.log('Try ' + re);
                  } else {
-                     //console.log(re + ' did not match, backup one and try next character')
                      re = backUpOneAndCheck(nextChar, i);
-                     //console.log('Try ' + re);
 
                      if (!re) {
-                         //console.log('Skip to next sequence')
                          return;
                      }
                  }
@@ -63,7 +56,6 @@
                  var remainingFirstLine = first.slice(index).split('');
                  re = first[index];
 
-                 //console.log('Checking ' + re);
                  remainingFirstLine.forEach(checkSequence);
              };
 
