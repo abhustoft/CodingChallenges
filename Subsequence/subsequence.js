@@ -5,8 +5,8 @@
 
          var lines = line.split(';'),
              found = [],
-             seed = lines[0].split(''),
-             target = lines[1].split(''),
+             seed = lines[0].split(''),  // Slice down to max 50
+             target = lines[1].split(''),//Slice down to max 50
 
              check = function (characterIndex, subTarget) {
                  var ind;
