@@ -4,64 +4,49 @@
      if (line != "") {
 
          var lines = line.split(';'),
-             first = lines[0],
-             second = lines[1],
-             finalRe = '',
-             prevRe,
-             re = '',
-             matchRe = /\.\*/g,
+             found = [],
+             seed = lines[0].split(''),
+             target = lines[1].split(''),
 
-             match = function (re) {
-                 //console.log(re);
-                 return second.search(re) != -1;
-             },
+             check = function (characterIndex, subTarget) {
+                 var ind = subTarget.indexOf(seed[characterIndex]);
 
-             registerLongest = function () {
-                 if (re.length > finalRe.length) {
-                     finalRe = re;
-                 }
-             },
+                 if (ind > -1) {
+                     // Register the find
+                     found.push(seed[characterIndex]);
 
-             getReForNext = function (nextChar) {
-                 prevRe = re;
-                 return re + '.*' + nextChar;
-             },
+                     // Look for next char in target *after* position of first find
+                     // Next seed char should also look *after* this position in target
+                     target = subTarget.slice((ind+1));
 
-             backUpOneAndCheck = function (nextChar, index) {
-                 // No match - remove last char in re
-                 if (index === (first.length-1)) {
-                     return;
-                 }
-                 return prevRe + '.*' + nextChar;
-
-             },
-
-             checkSequence = function (char, i) {
-                 var nextChar = first[i+1];
-
-                 if (match(re)) {
-                     //console.log('Found match of ' +  re);
-                     registerLongest();
-                     re = getReForNext(nextChar);
+                     if(subTarget.length > 0) {
+                         found = check(characterIndex + 1, target);
+                         return found;
+                     } else {
+                         // Got to the end of target string, return result
+                         return found;
+                     }
                  } else {
-                     re = backUpOneAndCheck(nextChar, i);
-
-                     if (!re) {
-                         return;
+                     if(subTarget.length > 0) {
+                         found = check(characterIndex, subTarget.slice((1)));
+                         return found;
+                     } else {
+                         return found;
                      }
                  }
              },
 
-             charInLine = function (char, index) {
-                 var remainingFirstLine = first.slice(index).split('');
-                 re = first[index];
+         longestFind = seed.reduce(function (previousValue, currentValue, seedIndex) {
+            var currentValueFound = check(seedIndex, target);
 
-                 remainingFirstLine.forEach(checkSequence);
-             };
+             if (currentValueFound.length > found.length) {
+                 found = currentValueFound;
+             }
 
-         var firstArr = first.split('');
-         firstArr.forEach(charInLine);
+             return found;
 
-         console.log(finalRe.replace(matchRe,''));
+         }, 0);
+
+         console.log(longestFind.join(''));
      }
  });
