@@ -1,0 +1,22 @@
+
+
+
+seedStart = 0
+seedSequencePoint = 0
+targetPoint = 0
+foundSequence
+Target
+
+loop A
+Is seed[seedStart] in target ?
+    No -> Increment Seedstart, looking for new sequence, start on new foundSequence - goto A
+    Yes -> seedSequencePoint = sequenceStart+1 - add sequencePoint to found list - first in new foundSequence
+
+
+        Is seed[seedSequencePoint] in target ?
+        Yes -> Increment seedSequencePoint - add sequencePoint to foundSequence
+        No -> If seedSequencePoint is last in seed: increment Seedstart, SeedSequencePoint=0,
+                    looking for new sequence, start on new foundSequence
+                    if (foundSequence > longestFound) longestFound = foundSequence
+                     - goto A
+              else Increment seedSequencePoint
