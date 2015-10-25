@@ -37,8 +37,13 @@
                  //if (target.length === 0) {
                  //    return found;
                  //}
+                 console.log('Longest seq so far: ', longestSequence);
 
-                 console.log('Start new sequence at: ' + seed[seedStart], seedStart);
+                 if (longestSequence.length > (seed.length - seedSequencePoint)) {
+                     console.log('Not possible to find longer than ', longestSequence.length);
+                     return;
+                 }
+                 console.log('Start new sequence at: ' + seed[seedStart], target);
 
                  ind = target.indexOf(seed[seedStart]);
 
@@ -57,6 +62,7 @@
                      if (foundSequence.length > longestSequence.length) {
                          longestSequence = foundSequence;
                      }
+                     target = originalTarget;
                      checkSeedStart(seedStart, target);
                  }
              },
@@ -96,8 +102,26 @@
                          checkSeedStart(seedStart, target);
                      } else {
                          seedSequencePoint = seedSequencePoint + 1;
+
                          subTarget = target.slice((ind+1));
-                         checkSeedSequencePoint(seedSequencePoint, subTarget);
+                         if (subTarget.length === 0) {
+                             // End of target line, start new sequence
+                             if (seedStart === seed.length-1){
+                                 console.log('Done 2 in checkSeedSeq ' + longestSequence);
+                                 return;
+                             } else {
+                                 seedStart = seedStart + 1;
+                             }
+                             if (foundSequence.length > longestSequence.length) {
+                                 longestSequence = foundSequence;
+                             }
+                             seedSequencePoint = 0;
+                             foundSequence = [];
+                             target = originalTarget;
+                             checkSeedStart(seedStart, target);
+                         } else {
+                             checkSeedSequencePoint(seedSequencePoint, subTarget);
+                         }
                      }
 
                  } else {
@@ -113,6 +137,7 @@
                          }
                          seedSequencePoint = 0;
                          foundSequence = [];
+                         target = originalTarget;
                          checkSeedStart(seedStart, target);
                      } else {
                          seedSequencePoint = seedSequencePoint + 1;
