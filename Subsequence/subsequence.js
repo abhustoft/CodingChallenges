@@ -77,6 +77,11 @@
 
                  console.log('Check ' + seed[seedSequencePoint] + ' against target ', target);
 
+                 if (longestSequence.length > target.length) {
+                     console.log('Not possible to find longer than ', target.length);
+                     return;
+                 }
+
                  if(seed[seedSequencePoint] === 'm') {
                      console.log('m');
                  }
