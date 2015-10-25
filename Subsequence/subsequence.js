@@ -5,7 +5,6 @@
 
          var seedStart = 0,
          seedSequencePoint = 0,
-         targetPoint = 0,
          foundSequence = [],
          longestSequence = [];
 
@@ -27,29 +26,36 @@
 
          var lines = line.split(';'),
              seed = lines[0].split('').slice(0, 50),  // Slice down to max 50
-             target = lines[1].split('').slice(0,50),//Slice down to max 50
+             target = lines[1].split('').slice(0,50), //Slice down to max 50
              originalTarget = target,
 
              checkSeedStart = function (seedStart, target) {
                  var ind,
                      subTarget = [];
 
-                 //if (target.length === 0) {
-                 //    return found;
-                 //}
-                 console.log('Longest seq so far: ', longestSequence);
+                 console.log('Longest seq so far: ', longestSequence.join(''));
 
                  if (longestSequence.length > (seed.length - seedSequencePoint)) {
                      console.log('Not possible to find longer than ', longestSequence.length);
                      return;
                  }
-                 console.log('Start new sequence at: ' + seed[seedStart], target);
+                 console.log('Start new sequence at ' + seed[seedStart] + ' in ' + seed.join('') + ' for ' + target.join(''));
+
+                 if(longestSequence.indexOf(seed[seedStart]) > -1) {
+                     console.log('Already found seq with ' + seed[seedStart]);
+
+                     FIX here
+                     //seedStart = seedStart + 1;
+                     //checkSeedStart(seedStart, target);
+                 }
+
 
                  ind = target.indexOf(seed[seedStart]);
 
                  if (ind > -1) {
                      seedSequencePoint = seedSequencePoint + 1;
                      foundSequence.push(seed[seedStart]);
+                     console.log('Found ' + foundSequence.join(''));
                      subTarget = target.slice((ind+1));
                      checkSeedSequencePoint(seedSequencePoint, subTarget);
                  } else {
@@ -71,17 +77,6 @@
                  var ind,
                      subTarget = [];
 
-                 //if (target.length === 0) {
-                 //    return found;
-                 //}
-
-                 console.log('Check ' + seed[seedSequencePoint] + ' against target ', target);
-
-                 if (longestSequence.length > target.length) {
-                     console.log('Not possible to find longer than ', target.length);
-                     return;
-                 }
-
                  if(seed[seedSequencePoint] === 'm') {
                      console.log('m');
                  }
@@ -89,6 +84,7 @@
 
                  if (ind > -1) {
                      foundSequence.push(seed[seedSequencePoint]);
+                     console.log('Found ' + foundSequence.join(''));
 
                      if (seedSequencePoint === seed.length-1) {
                          if (seedStart === seed.length-1){
@@ -133,7 +129,7 @@
                      if (seedSequencePoint === seed.length-1) {
                          if (seedStart === seed.length-1){
                              console.log('Done 2 in checkSeedSeq ' + longestSequence);
-                             return;
+                            return;
                          } else {
                              seedStart = seedStart + 1;
                          }
@@ -150,20 +146,8 @@
                      }
                  }
              };
-
+         console.log('Check lines ' + seed.join('') + ' against ' + originalTarget.join(''));
          checkSeedStart(seedStart, target);
-         console.log(longestSequence);
-
-         //longestFind = seed.reduce(function (previousValue, currentValue, seedIndex) {
-         //   var currentValueFound = check(seedIndex, target);
-         //
-         //    if (currentValueFound.length > found.length) {
-         //        found = currentValueFound;
-         //    }
-         //    return found;
-         //
-         //}, 0);
-
-         //console.log(longestFind.join(''));
+         console.log(longestSequence.join(''));
      }
  });
