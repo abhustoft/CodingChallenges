@@ -73,7 +73,11 @@
                          }
                          seedSequencePoint = seedSequencePoint + 1;
                          subTarget = target.slice((seedStartIndexInTarget + 1));
-                         checkSeedSequencePoint(seedSequencePoint, subTarget);
+                         if (subTarget.length === 0) {
+                             checkNextSeedStart();
+                         } else {
+                             checkSeedSequencePoint(seedSequencePoint, subTarget);
+                         }
                      }
                  } else {
                      checkNextSeedStart();
