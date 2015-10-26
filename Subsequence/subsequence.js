@@ -30,133 +30,90 @@
              seedStartIndexInTarget,
              lowestSeedStartIndexInTarget = 50,
 
+             checkNextSeedStart = function () {
+                 if (seedStart === seed.length-1){
+                     console.log('Checked all seedStarts, found: ' + longestSequence);
+                     return;
+                 } else {
+                     seedStart = seedStart + 1;
+                 }
+                 if (foundSequence.length > longestSequence.length) {
+                     longestSequence = foundSequence;
+                 }
+
+                 seedSequencePoint = 0;
+                 foundSequence = [];
+                 target = originalTarget;
+                 checkSeedStart(seedStart, target);
+             },
+
              checkSeedStart = function (seedStart, target) {
                  var subTarget = [];
 
-                 console.log('Longest seq so far: ', longestSequence.join(''));
+                 console.log('Longest sequence so far: ', longestSequence.join(''));
+                 console.log('Start new sequence at ' + seed[seedStart] + ' (' + seedStart + ') in ' + seed.join('') + ' for ' + target.join(''));
 
                  if (longestSequence.length > (seed.length - seedSequencePoint)) {
                      console.log('Not possible to find longer than ', longestSequence.length);
                      return;
                  }
-                 console.log('Start new sequence at ' + seed[seedStart] + ' in ' + seed.join('') + ' for ' + target.join(''));
 
                  seedStartIndexInTarget = target.indexOf(seed[seedStart]);
 
                  if (seedStartIndexInTarget > -1) {
+                     foundSequence.push(seed[seedStart]);
+                     console.log('Found ' + foundSequence.join(''));
 
                      if (seedStartIndexInTarget > lowestSeedStartIndexInTarget) {
-                         console.log('Need not look for substring of already found, got to next seedStart');
-                         if (seedStart === seed.length-1){
-                             console.log('Done in checkSeedStart ' + longestSequence);
-                             return;
-                         } else {
-                             seedStart = seedStart + 1;
-                         }
-                         if (foundSequence.length > longestSequence.length) {
-                             longestSequence = foundSequence;
-                         }
-                         target = originalTarget;
-                         checkSeedStart(seedStart, target);
+                         console.log('but need not look for substring of already found, got to next seedStart');
+                         checkNextSeedStart();
                      } else {
                          if (seedStartIndexInTarget < lowestSeedStartIndexInTarget) {
                              lowestSeedStartIndexInTarget = seedStartIndexInTarget;
                          }
                          seedSequencePoint = seedSequencePoint + 1;
-                         foundSequence.push(seed[seedStart]);
-                         console.log('Found ' + foundSequence.join(''));
                          subTarget = target.slice((seedStartIndexInTarget + 1));
                          checkSeedSequencePoint(seedSequencePoint, subTarget);
                      }
                  } else {
-                     if (seedStart === seed.length-1){
-                         console.log('Done in checkSeedStart ' + longestSequence);
-                         return;
-                     } else {
-                         seedStart = seedStart + 1;
-                     }
-                     if (foundSequence.length > longestSequence.length) {
-                         longestSequence = foundSequence;
-                     }
-                     target = originalTarget;
-                     checkSeedStart(seedStart, target);
+                     checkNextSeedStart();
                  }
              },
 
              checkSeedSequencePoint = function (seedSequencePoint, target) {
-                 var ind,
+                 var indexOfSequencePoint,
+                     lastCharacterInSeed = seedSequencePoint === seed.length - 1,
                      subTarget = [];
 
-                 if(seed[seedSequencePoint] === 'm') {
-                     console.log('m');
-                 }
-                 ind = target.indexOf(seed[seedSequencePoint]);
+                 indexOfSequencePoint = target.indexOf(seed[seedSequencePoint]);
 
-                 if (ind > -1) {
+                 if (indexOfSequencePoint > -1) {
                      foundSequence.push(seed[seedSequencePoint]);
                      console.log('Found ' + foundSequence.join(''));
 
-                     if (seedSequencePoint === seed.length-1) {
-                         if (seedStart === seed.length-1){
-                             console.log('Done in checkSeedSeq ' + longestSequence);
-                             return;
-                         } else {
-                             seedStart = seedStart + 1;
-                         }
-
-                         seedSequencePoint = 0;
-                         if (foundSequence.length > longestSequence.length) {
-                             longestSequence = foundSequence;
-                         }
-                         foundSequence = [];
-                         target = originalTarget;
-                         checkSeedStart(seedStart, target);
+                     if (lastCharacterInSeed) {
+                         checkNextSeedStart();
                      } else {
                          seedSequencePoint = seedSequencePoint + 1;
+                         subTarget = target.slice((indexOfSequencePoint+1));
 
-                         subTarget = target.slice((ind+1));
                          if (subTarget.length === 0) {
-                             // End of target line, start new sequence
-                             if (seedStart === seed.length-1){
-                                 console.log('Done 2 in checkSeedSeq ' + longestSequence);
-                                 return;
-                             } else {
-                                 seedStart = seedStart + 1;
-                             }
-                             if (foundSequence.length > longestSequence.length) {
-                                 longestSequence = foundSequence;
-                             }
-                             seedSequencePoint = 0;
-                             foundSequence = [];
-                             target = originalTarget;
-                             checkSeedStart(seedStart, target);
+                             checkNextSeedStart();
                          } else {
                              checkSeedSequencePoint(seedSequencePoint, subTarget);
                          }
                      }
 
                  } else {
-                     if (seedSequencePoint === seed.length-1) {
-                         if (seedStart === seed.length-1){
-                             console.log('Done 2 in checkSeedSeq ' + longestSequence);
-                            return;
-                         } else {
-                             seedStart = seedStart + 1;
-                         }
-                         if (foundSequence.length > longestSequence.length) {
-                             longestSequence = foundSequence;
-                         }
-                         seedSequencePoint = 0;
-                         foundSequence = [];
-                         target = originalTarget;
-                         checkSeedStart(seedStart, target);
+                     if (lastCharacterInSeed) {
+                         checkNextSeedStart();
                      } else {
                          seedSequencePoint = seedSequencePoint + 1;
                          checkSeedSequencePoint(seedSequencePoint, target);
                      }
                  }
              };
-         console.log('Check lines ' + seed.join('') + ' against ' + originalTarget.join(''));
+         console.log('\n\nCheck line ' + seed.join('') + ' against ' + originalTarget.join(''));
          checkSeedStart(seedStart, target);
          console.log(longestSequence.join(''));
      }
