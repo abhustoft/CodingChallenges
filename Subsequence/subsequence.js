@@ -1,37 +1,37 @@
+//    loop A
+//    Is seed[seedStart] in target ?
+//     No -> Increment Seedstart, looking for new sequence, start on new foundSequence - goto A
+//     Yes -> seedSequencePoint = sequenceStart+1 - add sequencePoint to found list - first in new foundSequence
+//            Increment targetPoint
+//
+//
+//    Is seed[seedSequencePoint] in target ?
+//     Yes -> Increment seedSequencePoint - add sequencePoint to foundSequence
+//            Increment targetPoint
+//     No -> If seedSequencePoint is last in seed: increment Seedstart, SeedSequencePoint=0,
+//                 looking for new sequence, start on new foundSequence
+//             if (foundSequence > longestFound) longestFound = foundSequence
+//                 - goto A
+//             else Increment seedSequencePoint
+
 'strict'
  var fs  = require("fs");
  fs.readFileSync(process.argv[2]).toString().split('\n').forEach(function (line) {
      if (line != "") {
 
          var seedStart = 0,
-         seedSequencePoint = 0,
-         foundSequence = [],
-         longestSequence = [];
-
-     //    loop A
-     //    Is seed[seedStart] in target ?
-     //     No -> Increment Seedstart, looking for new sequence, start on new foundSequence - goto A
-     //     Yes -> seedSequencePoint = sequenceStart+1 - add sequencePoint to found list - first in new foundSequence
-     //            Increment targetPoint
-     //
-     //
-     //    Is seed[seedSequencePoint] in target ?
-     //     Yes -> Increment seedSequencePoint - add sequencePoint to foundSequence
-     //            Increment targetPoint
-     //     No -> If seedSequencePoint is last in seed: increment Seedstart, SeedSequencePoint=0,
-     //                 looking for new sequence, start on new foundSequence
-     //             if (foundSequence > longestFound) longestFound = foundSequence
-     //                 - goto A
-     //             else Increment seedSequencePoint
-
-         var lines = line.split(';'),
+             seedSequencePoint = 0,
+             foundSequence = [],
+             longestSequence = [],
+             lines = line.split(';'),
              seed = lines[0].split('').slice(0, 50),  // Slice down to max 50
              target = lines[1].split('').slice(0,50), //Slice down to max 50
              originalTarget = target,
+             seedStartIndexInTarget,
+             lowestSeedStartIndexInTarget = 50,
 
              checkSeedStart = function (seedStart, target) {
-                 var ind,
-                     subTarget = [];
+                 var subTarget = [];
 
                  console.log('Longest seq so far: ', longestSequence.join(''));
 
@@ -41,23 +41,33 @@
                  }
                  console.log('Start new sequence at ' + seed[seedStart] + ' in ' + seed.join('') + ' for ' + target.join(''));
 
-                 if(longestSequence.indexOf(seed[seedStart]) > -1) {
-                     console.log('Already found seq with ' + seed[seedStart]);
+                 seedStartIndexInTarget = target.indexOf(seed[seedStart]);
 
-                     FIX here
-                     //seedStart = seedStart + 1;
-                     //checkSeedStart(seedStart, target);
-                 }
+                 if (seedStartIndexInTarget > -1) {
 
-
-                 ind = target.indexOf(seed[seedStart]);
-
-                 if (ind > -1) {
-                     seedSequencePoint = seedSequencePoint + 1;
-                     foundSequence.push(seed[seedStart]);
-                     console.log('Found ' + foundSequence.join(''));
-                     subTarget = target.slice((ind+1));
-                     checkSeedSequencePoint(seedSequencePoint, subTarget);
+                     if (seedStartIndexInTarget > lowestSeedStartIndexInTarget) {
+                         console.log('Need not look for substring of already found, got to next seedStart');
+                         if (seedStart === seed.length-1){
+                             console.log('Done in checkSeedStart ' + longestSequence);
+                             return;
+                         } else {
+                             seedStart = seedStart + 1;
+                         }
+                         if (foundSequence.length > longestSequence.length) {
+                             longestSequence = foundSequence;
+                         }
+                         target = originalTarget;
+                         checkSeedStart(seedStart, target);
+                     } else {
+                         if (seedStartIndexInTarget < lowestSeedStartIndexInTarget) {
+                             lowestSeedStartIndexInTarget = seedStartIndexInTarget;
+                         }
+                         seedSequencePoint = seedSequencePoint + 1;
+                         foundSequence.push(seed[seedStart]);
+                         console.log('Found ' + foundSequence.join(''));
+                         subTarget = target.slice((seedStartIndexInTarget + 1));
+                         checkSeedSequencePoint(seedSequencePoint, subTarget);
+                     }
                  } else {
                      if (seedStart === seed.length-1){
                          console.log('Done in checkSeedStart ' + longestSequence);
