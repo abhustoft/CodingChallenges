@@ -1,22 +1,6 @@
-//    loop A
-//    Is seed[seedStart] in target ?
-//     No -> Increment Seedstart, looking for new sequence, start on new foundSequence - goto A
-//     Yes -> seedSequencePoint = sequenceStart+1 - add sequencePoint to found list - first in new foundSequence
-//            Increment targetPoint
-//
-//
-//    Is seed[seedSequencePoint] in target ?
-//     Yes -> Increment seedSequencePoint - add sequencePoint to foundSequence
-//            Increment targetPoint
-//     No -> If seedSequencePoint is last in seed: increment Seedstart, SeedSequencePoint=0,
-//                 looking for new sequence, start on new foundSequence
-//             if (foundSequence > longestFound) longestFound = foundSequence
-//                 - goto A
-//             else Increment seedSequencePoint
-
-'strict'
+'strict';
  var fs  = require("fs");
- fs.readFileSync(process.argv[2]).toString().split('\n').forEach(function (line) {
+ fs.readFileSync(process.argv[2],'utf8').split('\n').forEach(function (line) {
      if (line != "") {
 
          var seedStart = 0,
@@ -53,6 +37,7 @@
                  //console.log('Longest sequence so far: ', longestSequence.join(''));
                  //console.log('Start new sequence at ' + seed[seedStart] + ' (' + seedStart + ') in ' + seed.join('') + ' for ' + target.join(''));
 
+                 //console.log('Lowest index: ', lowestSeedStartIndexInTarget);
                  if (longestSequence.length > (seed.length - seedSequencePoint)) {
                      //console.log('Not possible to find longer than ', longestSequence.length);
                      return;
@@ -64,7 +49,7 @@
                      foundSequence.push(seed[seedStart]);
                      //console.log('Found ' + foundSequence.join(''));
 
-                     if (seedStartIndexInTarget > lowestSeedStartIndexInTarget) {
+                     if (seedStartIndexInTarget >= lowestSeedStartIndexInTarget) {
                          //console.log('but need not look for substring of already found, got to next seedStart');
                          checkNextSeedStart();
                      } else {
