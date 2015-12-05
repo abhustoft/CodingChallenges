@@ -16,7 +16,6 @@
 
              checkNextSeedStart = function () {
                  if (seedStart === seed.length-1){
-                     //console.log('Checked all seedStarts, found: ' + longestSequence);
                      return;
                  } else {
                      seedStart = seedStart + 1;
@@ -34,12 +33,7 @@
              checkSeedStart = function (seedStart, target) {
                  var subTarget = [];
 
-                 //console.log('Longest sequence so far: ', longestSequence.join(''));
-                 //console.log('Start new sequence at ' + seed[seedStart] + ' (' + seedStart + ') in ' + seed.join('') + ' for ' + target.join(''));
-
-                 //console.log('Lowest index: ', lowestSeedStartIndexInTarget);
                  if (longestSequence.length > (seed.length - seedSequencePoint)) {
-                     //console.log('Not possible to find longer than ', longestSequence.length);
                      return;
                  }
 
@@ -47,10 +41,8 @@
 
                  if (seedStartIndexInTarget > -1) {
                      foundSequence.push(seed[seedStart]);
-                     //console.log('Found ' + foundSequence.join(''));
 
                      if (seedStartIndexInTarget >= lowestSeedStartIndexInTarget) {
-                         //console.log('but need not look for substring of already found, got to next seedStart');
                          checkNextSeedStart();
                      } else {
                          if (seedStartIndexInTarget < lowestSeedStartIndexInTarget) {
@@ -78,7 +70,6 @@
 
                  if (indexOfSequencePoint > -1) {
                      foundSequence.push(seed[seedSequencePoint]);
-                     //console.log('Found ' + foundSequence.join(''));
 
                      if (lastCharacterInSeed) {
                          checkNextSeedStart();
@@ -102,7 +93,7 @@
                      }
                  }
              };
-         //console.log('\n\nCheck line ' + seed.join('') + ' against ' + originalTarget.join(''));
+         
          checkSeedStart(seedStart, target);
          console.log(longestSequence.join(''));
      }
