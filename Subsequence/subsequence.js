@@ -93,7 +93,7 @@
                      }
                  }
              };
-         
+
          checkSeedStart(seedStart, target);
          console.log(longestSequence.join(''));
      }
